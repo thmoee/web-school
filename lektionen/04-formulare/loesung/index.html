@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anmeldung zum Spieleabend</title>
+  </head>
+  <body>
+    <main>
+      <h1>Anmeldung zum Spieleabend</h1>
+      <p>Am Freitag ab 19 Uhr im Gemeindehaus. Damit wir genug Tische und Snacks haben, melde dich bitte an.</p>
+
+      <form>
+        <p>
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </p>
+
+        <p>
+          <label for="email">E-Mail</label>
+          <input type="email" id="email" name="email" placeholder="z. B. alex@example.com" required>
+        </p>
+
+        <p>
+          <label for="personen">Anzahl Personen</label>
+          <input type="number" id="personen" name="personen" min="1" max="6" value="1">
+        </p>
+
+        <p>
+          <label for="spielart">Lieblingsart von Spielen</label>
+          <select id="spielart" name="spielart">
+            <option value="egal">Egal, Hauptsache spielen</option>
+            <option value="strategie">Strategie</option>
+            <option value="party">Party</option>
+            <option value="kooperativ">Kooperativ</option>
+          </select>
+        </p>
+
+        <fieldset>
+          <legend>Essen</legend>
+          <label><input type="radio" name="essen" value="alles" checked> Alles</label>
+          <label><input type="radio" name="essen" value="vegetarisch"> Vegetarisch</label>
+          <label><input type="radio" name="essen" value="vegan"> Vegan</label>
+        </fieldset>
+
+        <p>
+          <label><input type="checkbox" name="snacks"> Ich bringe Snacks mit</label>
+        </p>
+
+        <!-- Aufgabe 5 -->
+        <p>
+          <label for="termin">Wunschtermin</label>
+          <input type="date" id="termin" name="termin" min="2026-11-01">
+        </p>
+
+        <!-- Aufgabe 6 -->
+        <p>
+          <label for="spitzname">Spitzname</label>
+          <input
+            type="text"
+            id="spitzname"
+            name="spitzname"
+            pattern="[A-Za-zÄÖÜäöüß]{3,12}"
+            title="3 bis 12 Buchstaben, keine Zahlen oder Sonderzeichen"
+          >
+        </p>
+
+        <p>
+          <label for="nachricht">Nachricht</label>
+          <textarea id="nachricht" name="nachricht" rows="4" maxlength="300"></textarea>
+        </p>
+
+        <button type="submit">Anmelden</button>
+      </form>
+    </main>
+  </body>
+</html>

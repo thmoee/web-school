@@ -1,0 +1,21 @@
+{
+  // Erst ab Modul 3 wichtig.
+  // `npm run ts` übersetzt jede .ts-Datei in eine .js-Datei direkt daneben.
+  // Kein Bundler: Die .js-Dateien lädt der Browser über <script type="module">.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    // Imports schreibst du mit .ts-Endung (import { x } from "./daten.ts").
+    // Beim Übersetzen wird daraus .js, damit der Browser die Datei findet.
+    "rewriteRelativeImportExtensions": true,
+    // Nur TypeScript-Syntax, die sich einfach weglassen lässt.
+    // Dann kann Node die Dateien auch direkt ausführen: node datei.ts
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    // Damit du in den DevTools deinen TypeScript-Code siehst statt des übersetzten JavaScripts.
+    "sourceMap": true
+  },
+  "include": ["lektionen/**/*.ts", "projekt/**/*.ts"]
+}

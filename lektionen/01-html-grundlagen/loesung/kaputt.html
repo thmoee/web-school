@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fehler 1: Der title gehört in den head, nicht in den body. -->
+    <title>Pfannkuchen</title>
+  </head>
+  <body>
+    <!-- Fehler 2: Das End-Tag der h1 fehlte. Dadurch landete der Absatz in der Überschrift. -->
+    <h1>Pfannkuchen</h1>
+    <p>Das einfachste Rezept der Welt. Du brauchst nur vier Zutaten.</p>
+
+    <h2>Zutaten</h2>
+    <p>Mehl, Milch, Eier und eine Prise Salz. Und <em>Butter für die Pfanne</em> nicht vergessen!</p>
+
+    <h2>Zubereitung</h2>
+    <!-- Fehler 3: strong muss vor p geschlossen werden. Sonst rutscht „ruhen lassen.“ aus dem Absatz. -->
+    <p>Alles zu einem glatten Teig verrühren und <strong>mindestens zehn Minuten</strong> ruhen lassen.</p>
+    <!-- Fehler 4: Das End-Tag von em fehlte. Dadurch war auch „Guten Appetit!“ kursiv. -->
+    <p>Dann portionsweise in der heißen Pfanne ausbacken. <em>Erst wenden, wenn die Unterseite goldbraun ist.</em></p>
+
+    <p>Guten Appetit!</p>
+  </body>
+</html>

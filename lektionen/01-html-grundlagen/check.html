@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 01: HTML-Grundlagen</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      pruefe([
+        {
+          titel: "Aufgabe 1: Dein Grundgerüst",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Die Datei beginnt mit `<!DOCTYPE html>`",
+              tipp: "Das muss die allererste Zeile sein, noch vor `<html>`.",
+              test: ({ quelltext }) => /^\s*(<!--[\s\S]*?-->\s*)*<!doctype html>/i.test(quelltext),
+            },
+            {
+              name: "`<html>`, `<head>` und `<body>` stehen im Code",
+              tipp: "Der Browser ergänzt sie zur Not selbst, aber du sollst sie hinschreiben.",
+              test: ({ quelltext }) => ["html", "head", "body"].every((tag) => new RegExp(`<${tag}[\\s>]`, "i").test(quelltext)),
+            },
+            {
+              name: "Die Sprache ist auf Deutsch gesetzt",
+              tipp: "Schreib `<html lang=\"de\">`.",
+              test: ({ doc }) => doc.documentElement.lang === "de",
+            },
+            {
+              name: "Die Zeichenkodierung ist UTF-8",
+              tipp: "In den `<head>` gehört `<meta charset=\"utf-8\">`.",
+              test: ({ doc }) => doc.querySelector("head meta[charset]")?.getAttribute("charset").toLowerCase() === "utf-8",
+            },
+            {
+              name: "Das viewport-meta-Tag ist da",
+              tipp: "`<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">` in den `<head>`.",
+              test: ({ doc }) => doc.querySelector('head meta[name="viewport"]') !== null,
+            },
+            {
+              name: "Der `<title>` steht im `<head>` und ist nicht leer",
+              test: ({ doc }) => doc.head.querySelector("title")?.textContent.trim().length > 0,
+            },
+            {
+              name: "Es gibt genau eine `<h1>`",
+              test: ({ alle }) => alle("h1").length === 1,
+            },
+            {
+              name: "Es gibt mindestens zwei Absätze",
+              tipp: "Jeder Absatz steht in `<p>...</p>`.",
+              test: ({ alle }) => alle("p").length >= 2,
+            },
+            {
+              name: "In einem Absatz ist etwas mit `<strong>` hervorgehoben",
+              tipp: "Das `<strong>` muss *innerhalb* des `<p>` stehen.",
+              test: ({ doc }) => doc.querySelector("p strong") !== null,
+            },
+            {
+              name: "Es gibt einen Link zu einer anderen Website",
+              tipp: "`<a href=\"https://...\">Linktext</a>` – die Adresse beginnt mit `https://`.",
+              test: ({ doc }) => doc.querySelector('a[href^="http"]') !== null,
+            },
+            {
+              name: "Die Seite enthält einen eigenen Kommentar",
+              tipp: "Ein Kommentar sieht so aus: `<!-- Text -->`. Der Kommentar aus der Vorlage zählt nicht.",
+              test: ({ quelltext }) => /<!--/.test(quelltext) && !quelltext.includes("Lösch diesen Kommentar"),
+            },
+          ],
+        },
+        {
+          titel: "Aufgabe 2: Die kaputte Seite reparieren",
+          datei: "uebung/kaputt.html",
+          tests: [
+            {
+              name: "Der `<title>` steht im `<head>`",
+              tipp: "Der Fehler ist auf der Seite unsichtbar. Schau im Bereich Elemente nach, wo der `<title>` steckt.",
+              test: ({ doc }) => doc.head.querySelector("title") !== null && doc.body.querySelector("title") === null,
+            },
+            {
+              name: "Die `<h1>` ist geschlossen",
+              tipp: "Welcher Text ist auf der Seite riesig und fett, obwohl er keine Überschrift sein soll?",
+              test: ({ doc, quelltext }) =>
+                (quelltext.match(/<h1[\s>]/gi) || []).length === (quelltext.match(/<\/h1>/gi) || []).length &&
+                doc.querySelector("h1 p") === null,
+            },
+            {
+              name: "`<strong>` ist richtig verschachtelt",
+              tipp: "Was zuletzt geöffnet wurde, wird zuerst geschlossen.",
+              test: ({ alle, quelltext }) =>
+                !/<\/p>\s*<\/strong>/i.test(quelltext) && alle("p").some((p) => p.textContent.includes("ruhen lassen")),
+            },
+            {
+              name: "Jedes `<em>` ist geschlossen",
+              tipp: "Warum ist „Guten Appetit!“ kursiv?",
+              test: ({ alle, quelltext }) =>
+                (quelltext.match(/<em[\s>]/gi) || []).length === (quelltext.match(/<\/em>/gi) || []).length &&
+                alle("p").every((p) => !p.textContent.includes("Guten Appetit") || p.querySelector("em") === null),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

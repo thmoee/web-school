@@ -1,0 +1,155 @@
+:root {
+  --text: #1d1f23;
+  --leise: #5c6370;
+  --linie: #d8dce3;
+  --flaeche: #f5f6f8;
+  --gruen: #1f7a3d;
+  --gruen-hell: #e3f4e8;
+  --rot: #b42318;
+  --gelb-hell: #fdf3d7;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+body {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+  background: var(--flaeche);
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+
+.kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--linie);
+  border-radius: 8px;
+}
+
+.kopf h1 {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.kopf.fertig {
+  background: var(--gruen-hell);
+  border-color: var(--gruen);
+}
+
+.zusammenfassung {
+  margin: 0;
+  font-weight: 600;
+}
+
+.hinweis {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--leise);
+}
+
+button {
+  font: inherit;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--linie);
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--flaeche);
+}
+
+.abschnitt {
+  margin-top: 2rem;
+}
+
+.abschnitt h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.datei {
+  margin: 0.25rem 0 0.75rem;
+  color: var(--leise);
+}
+
+.meldung {
+  padding: 0.75rem 1rem;
+  background: var(--gelb-hell);
+  border-radius: 6px;
+}
+
+.tests {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tests li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--linie);
+}
+
+.symbol {
+  width: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ok .symbol {
+  color: var(--gruen);
+}
+
+.offen .symbol {
+  color: var(--rot);
+}
+
+.name {
+  flex: 1;
+}
+
+.bonus {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--leise);
+}
+
+.tipp {
+  flex-basis: 100%;
+  margin: 0.2rem 0 0 1.8rem;
+  color: var(--leise);
+}
+
+.vorschau {
+  margin-top: 1rem;
+}
+
+.vorschau summary {
+  cursor: pointer;
+  color: var(--leise);
+}
+
+.vorschau iframe {
+  width: 100%;
+  height: 22rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--linie);
+  border-radius: 6px;
+}

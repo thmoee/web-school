@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 00: Einrichtung</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      pruefe([
+        {
+          titel: "Deine erste Seite",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Der Titel wurde geändert",
+              tipp: "Ersetze `ÄNDERE MICH` im `<title>` durch einen eigenen Titel.",
+              test: ({ doc }) => doc.title.trim() !== "" && doc.title.trim() !== "ÄNDERE MICH",
+            },
+            {
+              name: "Die Überschrift enthält deinen Namen",
+              tipp: "Ersetze `DEIN NAME` in der `<h1>` durch deinen Namen.",
+              test: ({ doc }) => !doc.querySelector("h1").textContent.includes("DEIN NAME"),
+            },
+            {
+              name: "Es gibt einen zweiten Absatz über dich",
+              tipp: "Schreib unter dem ersten Absatz einen weiteren: `<p>Dein Text</p>`.",
+              test: ({ alle }) => alle("p").length >= 2,
+            },
+            {
+              name: "Die Liste hat mindestens drei Einträge",
+              tipp: "Jeder Eintrag steht in einem eigenen `<li>...</li>` innerhalb der `<ul>`.",
+              test: ({ alle }) => alle("ul li").length >= 3,
+            },
+            {
+              name: "Kein Listeneintrag besteht nur aus Punkten",
+              tipp: "Ersetze `...` durch etwas, das du gern machst.",
+              test: ({ alle }) => alle("li").every((li) => li.textContent.trim() !== "..."),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

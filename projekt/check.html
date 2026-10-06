@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Kursprojekt, Meilenstein Modul 1</title>
+    <script src="../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      // Die anderen Seiten des Projekts, die von der Startseite aus verlinkt sind
+      async function unterseiten({ alle, seite }, selektor = "a[href]") {
+        const hrefs = alle(selektor)
+          .map((a) => a.getAttribute("href"))
+          .filter((href) => !/^(https?:|mailto:|#)/.test(href) && /\.html$/.test(href) && !/(^|\/)index\.html$/.test(href));
+        const seiten = [];
+        for (const href of new Set(hrefs)) {
+          const dok = await seite(href);
+          if (dok) seiten.push(dok);
+        }
+        return seiten;
+      }
+
+      function felder(dok) {
+        return [...dok.querySelectorAll("input, select, textarea")].filter(
+          (feld) => !["submit", "button", "reset", "hidden"].includes(feld.type),
+        );
+      }
+
+      pruefe([
+        {
+          titel: "Meilenstein Modul 1: Inhalt und Struktur",
+          datei: "index.html",
+          fehlt: "Leg sie im Projekt-Schritt von Lektion 03 an.",
+          tests: [
+            {
+              name: "Vollständiges Grundgerüst",
+              tipp: "`<!DOCTYPE html>`, `<html lang=\"…\">`, `<meta charset=\"utf-8\">`, das viewport-meta-Tag und ein `<title>`.",
+              test: ({ doc, quelltext }) =>
+                /^\s*(<!--[\s\S]*?-->\s*)*<!doctype html>/i.test(quelltext) &&
+                doc.documentElement.lang !== "" &&
+                doc.querySelector("head meta[charset]")?.getAttribute("charset").toLowerCase() === "utf-8" &&
+                doc.querySelector('head meta[name="viewport"]') !== null &&
+                doc.title.trim() !== "",
+            },
+            {
+              name: "`<header>`, `<main>` und `<footer>` sind da, `<main>` genau einmal",
+              test: ({ doc, alle }) => doc.querySelector("header") && alle("main").length === 1 && doc.querySelector("footer"),
+            },
+            {
+              name: "Genau eine `<h1>`, und die Überschriften überspringen keine Ebene",
+              test: ({ alle, ueberschriftenOhneSprung }) => alle("h1").length === 1 && ueberschriftenOhneSprung(),
+            },
+            {
+              name: "Eine `<nav>` verlinkt auf mindestens eine weitere Seite, die es gibt",
+              test: async (ctx) => (await unterseiten(ctx, "nav a[href]")).length > 0,
+            },
+            {
+              name: "Mindestens ein Bild, alle werden angezeigt und haben ein `alt`",
+              test: ({ alle }) =>
+                alle("img").length > 0 && alle("img").every((img) => img.complete && img.naturalWidth > 0 && img.hasAttribute("alt")),
+            },
+            {
+              name: "Ein Formular, bei dem jedes Feld `<label>` und `name` hat",
+              tipp: "Das Formular kann auf der Startseite oder auf einer verlinkten Unterseite stehen.",
+              test: async (ctx) => {
+                const seiten = [ctx.doc, ...(await unterseiten(ctx))];
+                return seiten.some((dok) => {
+                  const liste = felder(dok);
+                  return dok.querySelector("form") && liste.length > 0 && liste.every((feld) => feld.labels.length > 0 && feld.name);
+                });
+              },
+            },
+            {
+              name: "Jede verlinkte Unterseite hat `<header>`, `<main>` und `<footer>`",
+              bonus: true,
+              test: async (ctx) => {
+                const seiten = await unterseiten(ctx);
+                return seiten.length > 0 && seiten.every((dok) => dok.querySelector("header") && dok.querySelector("main") && dok.querySelector("footer"));
+              },
+            },
+            {
+              name: "Insgesamt mindestens drei Seiten",
+              bonus: true,
+              test: async (ctx) => (await unterseiten(ctx)).length >= 2,
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

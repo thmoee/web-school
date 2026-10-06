@@ -1,0 +1,12 @@
+{
+  "name": "web-school",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ts": "tsc --watch",
+    "ts:einmal": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

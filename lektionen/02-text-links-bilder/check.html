@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 02: Text, Listen, Links, Bilder</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      // Links zu anderen .html-Dateien im selben Projekt (ohne externe Links, Anker und die Startseite)
+      function eigeneSeiten(alle) {
+        return alle("a[href]")
+          .map((a) => a.getAttribute("href"))
+          .filter((href) => !/^(https?:|mailto:|#)/.test(href) && /\.html$/.test(href) && !/index\.html$/.test(href));
+      }
+
+      pruefe([
+        {
+          titel: "Dein Steckbrief",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Es gibt genau eine `<h1>`",
+              test: ({ alle }) => alle("h1").length === 1,
+            },
+            {
+              name: "Es gibt mindestens zwei Abschnitte mit `<h2>`",
+              test: ({ alle }) => alle("h2").length >= 2,
+            },
+            {
+              name: "Die Überschriften überspringen keine Ebene",
+              tipp: "Die erste Überschrift ist die `<h1>`. Danach folgt auf eine `<h2>` höchstens eine `<h3>`, nicht direkt eine `<h4>`.",
+              test: ({ ueberschriftenOhneSprung }) => ueberschriftenOhneSprung(),
+            },
+            {
+              name: "Es gibt mindestens zwei Absätze",
+              test: ({ alle }) => alle("p").length >= 2,
+            },
+            {
+              name: "Etwas ist mit `<strong>` oder `<em>` hervorgehoben",
+              test: ({ doc }) => doc.querySelector("strong, em") !== null,
+            },
+            {
+              name: "Eine ungeordnete Liste `<ul>` hat mindestens drei Einträge",
+              test: ({ alle }) => alle("ul").some((ul) => ul.querySelectorAll(":scope > li").length >= 3),
+            },
+            {
+              name: "Eine geordnete Liste `<ol>` hat mindestens drei Einträge",
+              test: ({ alle }) => alle("ol").some((ol) => ol.querySelectorAll(":scope > li").length >= 3),
+            },
+            {
+              name: "Es gibt mindestens ein Bild",
+              test: ({ alle }) => alle("img").length > 0,
+            },
+            {
+              name: "Alle Bilder werden gefunden und angezeigt",
+              tipp: "Prüf den Pfad in `src`, auch die Groß- und Kleinschreibung. In der Konsole steht, welche Datei der Browser nicht gefunden hat.",
+              test: ({ alle }) => alle("img").length > 0 && alle("img").every((img) => img.complete && img.naturalWidth > 0),
+            },
+            {
+              name: "Jedes Bild hat ein `alt`-Attribut",
+              tipp: "Auch dekorative Bilder brauchen eins, dann eben leer: `alt=\"\"`.",
+              test: ({ alle }) => alle("img").length > 0 && alle("img").every((img) => img.hasAttribute("alt")),
+            },
+            {
+              name: "Mindestens ein Bild hat eine Beschreibung im `alt`",
+              test: ({ alle }) => alle("img").some((img) => img.alt.trim().length > 0),
+            },
+            {
+              name: "Es gibt einen Link zu einer externen Website",
+              test: ({ doc }) => doc.querySelector('a[href^="http"]') !== null,
+            },
+            {
+              name: "Es gibt einen Link zu deiner zweiten Seite, und die Seite existiert",
+              tipp: "Leg z. B. `mehr.html` im Ordner `uebung/` an und verlinke sie mit `<a href=\"mehr.html\">`.",
+              test: async ({ alle, datei }) => {
+                const seiten = eigeneSeiten(alle);
+                for (const href of seiten) {
+                  if ((await datei(href)) !== null) return true;
+                }
+                return false;
+              },
+            },
+            {
+              name: "Die zweite Seite verlinkt zurück auf `index.html`",
+              test: async ({ alle, seite }) => {
+                for (const href of eigeneSeiten(alle)) {
+                  const zweite = await seite(href);
+                  const links = zweite ? [...zweite.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")) : [];
+                  if (links.some((ziel) => /^(\.\/)?(index\.html)?$/.test(ziel))) return true;
+                }
+                return false;
+              },
+            },
+            {
+              name: "Ein Ankerlink springt zu einer Stelle auf der Seite",
+              bonus: true,
+              tipp: "`<a href=\"#abschnitt\">` springt zum Element mit `id=\"abschnitt\"`.",
+              test: ({ alle, doc }) =>
+                alle('a[href^="#"]').some((a) => a.getAttribute("href").length > 1 && doc.getElementById(a.getAttribute("href").slice(1))),
+            },
+            {
+              name: "Ein Bild steckt in einer `<figure>` mit `<figcaption>`",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector("figure img") !== null && doc.querySelector("figure figcaption") !== null,
+            },
+            {
+              name: "Eine Liste ist in einer anderen verschachtelt",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector("li > ul, li > ol") !== null,
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

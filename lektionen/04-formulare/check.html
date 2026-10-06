@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 04: Formulare</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      // Alle Felder, in die man etwas eingeben kann (ohne Buttons)
+      function felder(alle) {
+        return alle("input, select, textarea").filter((feld) => !["submit", "button", "reset", "hidden"].includes(feld.type));
+      }
+
+      pruefe([
+        {
+          titel: "Die Anmeldung",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Es gibt ein `<form>`",
+              test: ({ alle }) => alle("form").length === 1,
+            },
+            {
+              name: "Jedes Feld hat ein `<label>`",
+              tipp: "Entweder `<label for=\"…\">` passend zur `id` des Feldes, oder das Feld steckt im `<label>`.",
+              test: ({ alle }) => felder(alle).length > 0 && felder(alle).every((feld) => feld.labels.length > 0),
+            },
+            {
+              name: "Jedes Feld hat einen `name`",
+              tipp: "Ohne `name` wird der Wert beim Absenden nicht mitgeschickt.",
+              test: ({ alle }) => felder(alle).length > 0 && felder(alle).every((feld) => feld.name !== ""),
+            },
+            {
+              name: "Der Name ist ein Pflichtfeld",
+              test: ({ alle }) => alle('input[type="text"], input:not([type])').some((feld) => feld.required),
+            },
+            {
+              name: "Die E-Mail hat den passenden Typ und ist ein Pflichtfeld",
+              test: ({ doc }) => doc.querySelector('input[type="email"][required]') !== null,
+            },
+            {
+              name: "Die Personenzahl geht nur von 1 bis 6",
+              tipp: "Ein Zahlenfeld mit `min` und `max`.",
+              test: ({ doc }) => {
+                const feld = doc.querySelector('input[type="number"]');
+                return feld?.min === "1" && feld?.max === "6";
+              },
+            },
+            {
+              name: "Eine Auswahlliste hat mindestens drei Optionen",
+              test: ({ alle }) => alle("select").some((auswahl) => auswahl.options.length >= 3),
+            },
+            {
+              name: "Drei Radio-Buttons gehören zu einer Gruppe",
+              tipp: "Radio-Buttons gehören zusammen, wenn sie denselben `name` haben.",
+              test: ({ alle }) => {
+                const radios = alle('input[type="radio"]');
+                return radios.length >= 3 && radios.every((radio) => radio.name === radios[0].name);
+              },
+            },
+            {
+              name: "Die Radio-Buttons stehen in einem `<fieldset>` mit `<legend>`",
+              test: ({ alle }) => {
+                const radios = alle('input[type="radio"]');
+                return radios.length > 0 && radios.every((radio) => radio.closest("fieldset")?.querySelector("legend"));
+              },
+            },
+            {
+              name: "Es gibt eine Checkbox",
+              test: ({ doc }) => doc.querySelector('input[type="checkbox"]') !== null,
+            },
+            {
+              name: "Es gibt ein mehrzeiliges Textfeld",
+              test: ({ doc }) => doc.querySelector("textarea") !== null,
+            },
+            {
+              name: "Ein Button schickt das Formular ab",
+              test: ({ doc }) => doc.querySelector('form button:not([type]), form button[type="submit"], form input[type="submit"]') !== null,
+            },
+            {
+              name: "Eine Essensoption ist vorausgewählt",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector('input[type="radio"][checked]') !== null,
+            },
+            {
+              name: "Die Nachricht hat höchstens 300 Zeichen",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector("textarea")?.maxLength === 300,
+            },
+            {
+              name: "Der Wunschtermin geht erst ab dem 1. November 2026",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector('input[type="date"]')?.min === "2026-11-01",
+            },
+            {
+              name: "Ein Feld hat ein `pattern`",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector("input[pattern]") !== null,
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

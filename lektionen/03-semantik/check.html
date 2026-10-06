@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 03: Semantische Struktur</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const saetze = [
+        "Wir treffen uns jeden Freitag ab 19 Uhr im Gemeindehaus",
+        "Neues Spiel im Regal: Flügelschlag",
+        "2. Oktober 2026",
+        "viel spannender, als das klingt",
+        "Am Freitag erklärt Mira die Regeln",
+        "Rückblick: Unser Herbstturnier",
+        "25. September 2026",
+        "Gewonnen hat Jonas, ganz knapp vor Lea",
+        "Danke an alle, die Kuchen mitgebracht haben",
+        "Nächstes Treffen",
+        "Gemeindehaus, Raum 2",
+        "Impressum",
+      ];
+
+      pruefe([
+        {
+          titel: "Der Brettspielclub, aufgeräumt",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Der Inhalt ist vollständig erhalten",
+              tipp: "Es ist ein Satz verloren gegangen. Vergleich mit der ursprünglichen Seite.",
+              test: ({ doc }) => {
+                const text = doc.body.textContent.replace(/\s+/g, " ");
+                return saetze.every((satz) => text.includes(satz));
+              },
+            },
+            {
+              name: "Ein `<header>` enthält den Clubnamen als `<h1>`",
+              test: ({ doc, alle }) => alle("h1").length === 1 && doc.querySelector("header h1")?.textContent.includes("Würfelglück"),
+            },
+            {
+              name: "Eine `<nav>` enthält alle vier Menülinks",
+              test: ({ alle }) => alle("nav a").length >= 4,
+            },
+            {
+              name: "Es gibt genau ein `<main>`",
+              test: ({ alle }) => alle("main").length === 1,
+            },
+            {
+              name: "Die beiden Beiträge sind `<article>`-Elemente in `<main>`",
+              test: ({ alle }) => alle("main article").length >= 2,
+            },
+            {
+              name: "Jeder Beitrag hat eine echte Überschrift",
+              tipp: "Welche Ebene kommt nach der `<h1>`?",
+              test: ({ alle }) => alle("article").length >= 2 && alle("article").every((a) => a.querySelector("h2, h3") !== null),
+            },
+            {
+              name: "„Nächstes Treffen“ steht in einem `<aside>` mit Überschrift",
+              test: ({ doc }) => /Nächstes Treffen/.test(doc.querySelector("aside")?.querySelector("h2, h3")?.textContent ?? ""),
+            },
+            {
+              name: "Ein `<footer>` enthält den Link zum Impressum",
+              test: ({ alle }) => alle("footer a").some((a) => a.textContent.includes("Impressum")),
+            },
+            {
+              name: "Kein `<b>` mehr als Überschrift",
+              tipp: "Fett gedruckt ist noch keine Überschrift. Nimm `<h1>` bis `<h6>`.",
+              test: ({ alle }) => alle("b").length === 0,
+            },
+            {
+              name: "Absätze stehen in `<p>`, nicht zwischen `<br><br>`",
+              test: ({ quelltext, alle }) => !/<br\s*\/?>\s*<br\s*\/?>/i.test(quelltext) && alle("article p").length >= 4,
+            },
+            {
+              name: "Die alten Div-Kästen sind weg",
+              tipp: "Jedes `<div class=\"...\">` aus der Vorlage hat jetzt ein passenderes Element.",
+              test: ({ alle }) =>
+                !alle("div").some((div) => ["kopf", "logo", "menue", "inhalt", "beitrag", "titel", "seitenleiste", "fuss"].includes(div.className)),
+            },
+            {
+              name: "Kein einziges `<div>` mehr",
+              bonus: true,
+              test: ({ alle }) => alle("div").length === 0,
+            },
+            {
+              name: "Die Menülinks stehen in einer Liste",
+              bonus: true,
+              test: ({ doc }) => doc.querySelector("nav li a") !== null,
+            },
+            {
+              name: "Alle drei Datumsangaben stecken in `<time datetime=\"...\">`",
+              bonus: true,
+              test: ({ alle }) => alle("time[datetime]").length >= 3,
+            },
+            {
+              name: "Die Überschriften überspringen keine Ebene",
+              bonus: true,
+              test: ({ ueberschriftenOhneSprung }) => ueberschriftenOhneSprung(),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>
