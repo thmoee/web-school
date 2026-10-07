@@ -34,9 +34,18 @@
               test: ({ alle }) => alle("ul li").length >= 3,
             },
             {
-              name: "Kein Listeneintrag besteht nur aus Punkten",
-              tipp: "Ersetze `...` durch etwas, das du gern machst.",
-              test: ({ alle }) => alle("li").every((li) => li.textContent.trim() !== "..."),
+              name: "Jeder Listeneintrag enthält echten Text",
+              tipp: "Ersetze `...` durch etwas, das du gern machst. Ein Eintrag aus Punkten, Strichen oder ganz ohne Text zählt nicht.",
+              // Mindestens ein Buchstabe, egal in welcher Sprache: `....`, `…` oder `- - -` fallen damit durch.
+              test: ({ alle }) => alle("ul li").every((li) => /\p{L}/u.test(li.textContent)),
+            },
+            {
+              name: "Die Listeneinträge sind alle verschieden",
+              tipp: "Hast du einen Eintrag kopiert und vergessen, ihn zu ändern? Jedes `<li>` braucht einen eigenen Text.",
+              test: ({ alle }) => {
+                const texte = alle("ul li").map((li) => li.textContent.trim().replace(/\s+/g, " ").toLowerCase());
+                return new Set(texte).size === texte.length;
+              },
             },
           ],
         },
