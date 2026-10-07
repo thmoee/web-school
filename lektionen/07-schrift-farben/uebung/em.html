@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>em oder rem?</title>
+    <!-- Ausnahmsweise steht das CSS in einem <style>-Element, damit du alles auf einen Blick siehst. -->
+    <style>
+      html {
+        font-size: 16px;
+      }
+
+      .em li {
+        font-size: 0.75em;
+      }
+
+      .rem li {
+        font-size: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="em">
+      <li>
+        Ebene 1
+        <ul>
+          <li>
+            Ebene 2
+            <ul>
+              <li>Ebene 3</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <ul class="rem">
+      <li>
+        Ebene 1
+        <ul>
+          <li>
+            Ebene 2
+            <ul>
+              <li>Ebene 3</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </body>
+</html>

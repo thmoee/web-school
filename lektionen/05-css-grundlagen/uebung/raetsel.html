@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kaskaden-Rätsel</title>
+    <!-- Ausnahmsweise steht das CSS in einem <style>-Element, damit du alles auf einen Blick siehst. -->
+    <style>
+      p {
+        color: black;
+      }
+
+      .text {
+        color: blue;
+      }
+
+      #dritter {
+        color: green;
+      }
+
+      p {
+        color: red;
+      }
+
+      .text.wichtig {
+        color: purple;
+      }
+
+      main p {
+        color: orange;
+      }
+
+      #kasten {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>Absatz 1</p>
+      <p class="text">Absatz 2</p>
+      <p class="text" id="dritter">Absatz 3</p>
+      <p class="text wichtig">Absatz 4</p>
+      <p class="wichtig">Absatz 5</p>
+    </main>
+
+    <p>Absatz 6</p>
+    <p class="text" style="color: deeppink">Absatz 7</p>
+
+    <section id="kasten">
+      <h2>Überschrift 8</h2>
+      <p>Absatz 9</p>
+    </section>
+  </body>
+</html>

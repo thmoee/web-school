@@ -1,0 +1,62 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: system-ui, sans-serif;
+  color: #1d2b28;
+  background-color: #fffdf7;
+}
+
+h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #1f6f5c;
+}
+
+.mosaik {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 8rem;
+  grid-template-areas:
+    "a a b c"
+    "a a d d"
+    "e f g g"
+    "e h h i";
+  gap: 0.75rem;
+}
+
+.kachel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #e3f1ec;
+}
+
+.kachel strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+}
+
+.a {
+  grid-area: a;
+  color: white;
+  background-color: #1f6f5c;
+}
+
+.a strong {
+  font-size: 2.5rem;
+}
+
+.b { grid-area: b; }
+.c { grid-area: c; background-color: #fdf3d7; }
+.d { grid-area: d; background-color: #fdf3d7; }
+.e { grid-area: e; color: white; background-color: #9a3412; }
+.f { grid-area: f; }
+.g { grid-area: g; }
+.h { grid-area: h; background-color: #fdf3d7; }
+.i { grid-area: i; }

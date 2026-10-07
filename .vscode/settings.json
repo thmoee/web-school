@@ -4,5 +4,6 @@
     "**/*.js.map": true,
     "node_modules": true
   },
-  "liveServer.settings.donotShowInfoMsg": true
+  "liveServer.settings.donotShowInfoMsg": true,
+  "liveServer.settings.fullReload": true
 }

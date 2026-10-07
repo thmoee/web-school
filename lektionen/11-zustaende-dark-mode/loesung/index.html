@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mitmachen – Brettspielclub Würfelglück</title>
+    <link rel="stylesheet" href="stil.css">
+  </head>
+  <body>
+    <header>
+      <h1>Brettspielclub Würfelglück</h1>
+      <nav>
+        <ul>
+          <li><a href="#">Start</a></li>
+          <li><a href="#">Termine</a></li>
+          <li><a href="#">Unsere Spiele</a></li>
+          <li><a href="#" class="knopf">Mitmachen</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <h2>Anmeldung zum Spieleabend</h2>
+      <p>Am Freitag ab 19 Uhr im Gemeindehaus. Damit wir genug Tische und Snacks haben, melde dich bitte an.</p>
+
+      <form id="anmeldung">
+        <p class="feld">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required>
+        </p>
+
+        <p class="feld">
+          <label for="email">E-Mail</label>
+          <input type="email" id="email" name="email" placeholder="z. B. alex@example.com" required>
+        </p>
+
+        <p class="feld">
+          <label for="personen">Anzahl Personen</label>
+          <input type="number" id="personen" name="personen" min="1" max="6" value="1">
+        </p>
+
+        <p class="feld">
+          <label for="spielart">Lieblingsart von Spielen</label>
+          <select id="spielart" name="spielart">
+            <option value="egal">Egal, Hauptsache spielen</option>
+            <option value="strategie">Strategie</option>
+            <option value="party">Party</option>
+            <option value="kooperativ">Kooperativ</option>
+          </select>
+        </p>
+
+        <fieldset>
+          <legend>Essen</legend>
+          <label><input type="radio" name="essen" value="alles" checked> Alles</label>
+          <label><input type="radio" name="essen" value="vegetarisch"> Vegetarisch</label>
+          <label><input type="radio" name="essen" value="vegan"> Vegan</label>
+        </fieldset>
+
+        <p>
+          <label><input type="checkbox" name="snacks"> Ich bringe Snacks mit</label>
+        </p>
+
+        <p class="feld">
+          <label for="nachricht">Nachricht</label>
+          <textarea id="nachricht" name="nachricht" rows="4" maxlength="300"></textarea>
+        </p>
+
+        <button type="submit">Anmelden</button>
+      </form>
+    </main>
+
+    <footer>
+      <p>© 2026 Brettspielclub Würfelglück</p>
+      <p><a href="#">Impressum</a> · <a href="#">Kontakt</a></p>
+    </footer>
+  </body>
+</html>

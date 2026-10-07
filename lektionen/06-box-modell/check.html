@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 06: Das Box-Modell</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const DURCHSICHTIG = "rgba(0, 0, 0, 0)";
+
+      // Abstand vom linken und rechten Rand des Fensters
+      function raender({ doc }, el) {
+        const box = el.getBoundingClientRect();
+        return [box.left, doc.documentElement.clientWidth - box.right];
+      }
+
+      pruefe([
+        {
+          titel: "Der Brettspielclub in Kästen",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Alle Elemente benutzen `box-sizing: border-box`",
+              tipp: "Der Selektor `*` trifft alle Elemente.",
+              test: ({ alle, stil }) => alle("body, body *").every((el) => stil(el).boxSizing === "border-box"),
+            },
+            {
+              name: "Auf einem breiten Bildschirm ist der Inhalt höchstens `45rem` breit und steht in der Mitte",
+              tipp: "Kopf, Hauptteil, Kasten und Fußbereich zählen alle. `max-width` und `margin: 0 auto`.",
+              test: async (ctx) => {
+                await ctx.breite(1100);
+                return ctx.alle("header, main, aside, footer").every((el) => {
+                  const [links, rechts] = raender(ctx, el);
+                  return el.getBoundingClientRect().width <= 45 * 16 + 1 && links > 100 && Math.abs(links - rechts) <= 2;
+                });
+              },
+            },
+            {
+              name: "In einem schmalen Fenster bleibt am Rand mindestens `1rem` Platz",
+              test: async (ctx) => {
+                await ctx.breite(360);
+                return ctx.alle("header, main, aside, footer").every((el) => raender(ctx, el).every((rand) => rand >= 15.5));
+              },
+            },
+            {
+              name: "Die Beiträge haben Innenabstand, Rahmen und runde Ecken",
+              test: ({ alle, stil }) =>
+                alle("article").every((article) => {
+                  const s = stil(article);
+                  return parseFloat(s.paddingLeft) > 0 && parseFloat(s.borderTopWidth) > 0 && parseFloat(s.borderTopLeftRadius) > 0;
+                }),
+            },
+            {
+              name: "Zwischen den Beiträgen ist Abstand",
+              tipp: "Ein `margin` sorgt für Abstand zwischen den Karten.",
+              test: ({ alle, stil }) => {
+                const karten = alle("article").map((article) => article.getBoundingClientRect());
+                return (
+                  alle("article").every((article) => parseFloat(stil(article).marginTop) + parseFloat(stil(article).marginBottom) > 0) &&
+                  karten.every((karte, i) => i === 0 || karte.top - karten[i - 1].bottom >= 8)
+                );
+              },
+            },
+            {
+              name: "Der Hinweis hat Innenabstand und runde Ecken",
+              test: ({ stil }) => parseFloat(stil(".hinweis").paddingLeft) > 0 && parseFloat(stil(".hinweis").borderTopLeftRadius) > 0,
+            },
+            {
+              name: "Die Menüpunkte stehen nebeneinander, ohne Aufzählungspunkte",
+              bonus: true,
+              test: ({ alle, stil }) => {
+                const punkte = alle("nav li");
+                return punkte.every(
+                  (li) =>
+                    li.getBoundingClientRect().top === punkte[0].getBoundingClientRect().top &&
+                    (stil(li).display !== "list-item" || stil(li).listStyleType === "none"),
+                );
+              },
+            },
+            {
+              name: "Das Padding der Menülinks wirkt in alle Richtungen",
+              bonus: true,
+              tipp: "Bei `display: inline` schiebt das Padding oben und unten nichts zur Seite.",
+              test: ({ alle, stil }) =>
+                alle("nav a").every((a) => parseFloat(stil(a).paddingTop) > 0 && ["inline-block", "block"].includes(stil(a).display)),
+            },
+            {
+              name: "Der `<header>` ist farbig, und darüber ist kein Streifen",
+              bonus: true,
+              test: ({ doc, stil }) =>
+                stil("header").backgroundColor !== DURCHSICHTIG &&
+                doc.querySelector("header h1").getBoundingClientRect().top - doc.querySelector("header").getBoundingClientRect().top >= 4,
+            },
+            {
+              name: "„Mitmachen“ ist ein Knopf mit der Klasse `knopf`",
+              bonus: true,
+              test: ({ alle, stil }) => {
+                const knopf = alle("nav a").find((a) => a.classList.contains("knopf"));
+                return (
+                  knopf.textContent.includes("Mitmachen") &&
+                  stil(knopf).backgroundColor !== DURCHSICHTIG &&
+                  stil(knopf).color === "rgb(255, 255, 255)" &&
+                  parseFloat(stil(knopf).borderTopLeftRadius) > 0
+                );
+              },
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

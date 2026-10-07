@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Check – Kursprojekt, Meilenstein Modul 1</title>
+    <title>Check – Kursprojekt, Meilensteine</title>
     <script src="../werkzeuge/check.js"></script>
   </head>
   <body>
@@ -20,6 +20,48 @@
         }
         return seiten;
       }
+
+      // Wie unterseiten(), aber mit der Adresse jeder Seite, damit Pfade darin aufgelöst werden können
+      async function seitenMitAdresse({ doc, alle, seite }) {
+        const liste = [[doc.URL, doc]];
+        const hrefs = alle("a[href]")
+          .map((a) => a.getAttribute("href"))
+          .filter((href) => !/^(https?:|mailto:|#)/.test(href) && /\.html$/.test(href) && !/(^|\/)index\.html$/.test(href));
+        for (const href of new Set(hrefs)) {
+          const dok = await seite(href);
+          if (dok) liste.push([new URL(href, doc.URL).href, dok]);
+        }
+        return liste;
+      }
+
+      // Elemente, die selbst sichtbaren Text enthalten
+      function texte(alle) {
+        return alle("body *").filter(
+          (el) =>
+            el.getBoundingClientRect().width > 0 &&
+            !["SCRIPT", "STYLE", "OPTION"].includes(el.tagName) &&
+            [...el.childNodes].some((knoten) => knoten.nodeType === Node.TEXT_NODE && knoten.textContent.trim() !== ""),
+        );
+      }
+
+      function genugKontrast({ alle, kontrast }) {
+        const zuWenig = texte(alle).filter((el) => kontrast(el) < (/^H[1-3]$/.test(el.tagName) ? 3 : 4.5));
+        for (const el of zuWenig) console.info(`Zu wenig Kontrast (${kontrast(el).toFixed(2)}:1):`, el);
+        return zuWenig.length === 0;
+      }
+
+      // Schaltet irgendeine Regel den Fokusring dieses Elements ab?
+      function fokusAbgeschaltet(regeln, el) {
+        return regeln().some((r) => {
+          if (!r.style || !(r.style.outlineStyle === "none" || r.style.outlineWidth === "0px")) return false;
+          return r.selectorText.split(",").some((teil) => {
+            const ohneZustand = teil.replace(/:(hover|focus-visible|focus-within|focus|active)(?![\w-])/g, "").trim();
+            return el.matches(ohneZustand === "" || /[>+~]$/.test(ohneZustand) ? `${ohneZustand} *` : ohneZustand);
+          });
+        });
+      }
+
+      const medien = (regeln) => regeln().filter((r) => r.media && r.cssRules).map((r) => r.media.mediaText);
 
       function felder(dok) {
         return [...dok.querySelectorAll("input, select, textarea")].filter(
@@ -83,6 +125,104 @@
               name: "Insgesamt mindestens drei Seiten",
               bonus: true,
               test: async (ctx) => (await unterseiten(ctx)).length >= 2,
+            },
+          ],
+        },
+        {
+          titel: "Meilenstein Modul 2: Gestaltung",
+          datei: "index.html",
+          fehlt: "Leg sie im Projekt-Schritt von Lektion 03 an.",
+          tests: [
+            {
+              name: "Jede Seite bindet ein Stylesheet ein, und die Datei gibt es",
+              tipp: "Auch die verlinkten Unterseiten. Liegt eine Seite in einem Unterordner, beginnt der Pfad mit `../`.",
+              test: async (ctx) => {
+                const seiten = await seitenMitAdresse(ctx);
+                for (const [adresse, dok] of seiten) {
+                  const link = dok.querySelector('link[rel="stylesheet"][href]');
+                  if (!link || (await ctx.datei(new URL(link.getAttribute("href"), adresse).href)) === null) return false;
+                }
+                return true;
+              },
+            },
+            {
+              name: "Das CSS steht in eigenen Dateien, nicht im HTML",
+              tipp: "Kein `<style>`-Element und kein `style`-Attribut, auf keiner Seite.",
+              test: async (ctx) => (await seitenMitAdresse(ctx)).every(([, dok]) => dok.querySelector("style, [style]") === null),
+            },
+            {
+              name: "Alle Elemente benutzen `box-sizing: border-box`",
+              test: ({ alle, stil }) => alle("body, body *").every((el) => stil(el).boxSizing === "border-box"),
+            },
+            {
+              name: "Die Farben sind als Custom Properties in `:root` festgelegt",
+              test: ({ regeln }) =>
+                regeln()
+                  .filter((r) => r.selectorText === ":root")
+                  .flatMap((r) => [...r.style].filter((name) => name.startsWith("--") && CSS.supports("color", r.style.getPropertyValue(name).trim())))
+                  .length >= 2,
+            },
+            {
+              name: "Alle Texte haben genug Kontrast",
+              tipp: "Welche Elemente zu wenig Kontrast haben, steht in der Konsole der DevTools. Text auf Bildern kann der Check nicht prüfen.",
+              test: (ctx) => genugKontrast(ctx),
+            },
+            {
+              name: "375px: Kein waagerechter Scrollbalken",
+              test: async ({ doc, breite }) => {
+                await breite(375);
+                return doc.documentElement.scrollWidth <= doc.documentElement.clientWidth;
+              },
+            },
+            {
+              name: "375px: Alle Bilder passen hinein und sind nicht verzerrt",
+              test: async ({ doc, alle, breite }) => {
+                await breite(375);
+                return alle("img").every((img) => {
+                  const box = img.getBoundingClientRect();
+                  return (
+                    box.right <= doc.documentElement.clientWidth + 0.5 &&
+                    Math.abs(box.width / box.height - img.naturalWidth / img.naturalHeight) < 0.02
+                  );
+                });
+              },
+            },
+            {
+              name: "Die Links in der Navigation verändern sich beim Hover",
+              test: ({ alle, stil, zustand }) =>
+                alle("nav a").length > 0 &&
+                alle("nav a").every((a) => {
+                  const normal = stil(a);
+                  const vorher = [normal.color, normal.backgroundColor, normal.textDecorationLine, normal.borderBottomColor];
+                  const hover = zustand(a, ":hover");
+                  return vorher.join() !== [hover.color, hover.backgroundColor, hover.textDecorationLine, hover.borderBottomColor].join();
+                }),
+            },
+            {
+              name: "Links, Knöpfe und Formularfelder zeigen beim Fokus einen sichtbaren Rahmen",
+              tipp: "Kein `outline: none` ohne Ersatz. Am besten ein eigener Fokusring mit `:focus-visible`.",
+              test: ({ alle, zustand, regeln }) =>
+                alle("a[href], button, input, select, textarea").every((el) => {
+                  const z = zustand(el, ":focus", ":focus-visible");
+                  return (z.outlineStyle !== "none" && parseFloat(z.outlineWidth) > 0) || z.boxShadow !== "none" || !fokusAbgeschaltet(regeln, el);
+                }),
+            },
+            {
+              name: "Mobile first: Es gibt Media Queries mit `min-width`, aber keine mit `max-width`",
+              bonus: true,
+              test: ({ regeln }) =>
+                medien(regeln).some((m) => /min-width|width\s*>|<=?\s*width/.test(m)) &&
+                !medien(regeln).some((m) => /max-width|width\s*<|>=?\s*width/.test(m)),
+            },
+            {
+              name: "Keine Schriftgröße in `px`",
+              bonus: true,
+              test: ({ regeln }) => regeln().every((r) => !r.style || !r.style.fontSize.endsWith("px")),
+            },
+            {
+              name: "Es gibt einen Dark Mode, und darin haben alle Texte genug Kontrast",
+              bonus: true,
+              test: (ctx) => medien(ctx.regeln).some((m) => /prefers-color-scheme\s*:\s*dark/.test(m)) && ctx.dunkel(() => genugKontrast(ctx)),
             },
           ],
         },

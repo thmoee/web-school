@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Grid-Rätsel</title>
+    <!-- Ausnahmsweise steht das CSS in einem <style>-Element, damit du alles auf einen Blick siehst. -->
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+      }
+
+      .raster {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 0.5rem;
+        width: 32rem;
+        border: 2px dashed #888;
+      }
+
+      .raster div {
+        padding: 0.5rem;
+        background-color: #e3f1ec;
+        border: 2px solid #1f6f5c;
+      }
+
+      .zwei {
+        grid-column: span 2;
+      }
+
+      .fuenf {
+        grid-column: 1 / -1;
+      }
+
+      .sieben {
+        grid-column: 3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="raster">
+      <div>1</div>
+      <div class="zwei">2</div>
+      <div>3</div>
+      <div>4</div>
+      <div class="fuenf">5</div>
+      <div>6</div>
+      <div class="sieben">7</div>
+    </div>
+  </body>
+</html>

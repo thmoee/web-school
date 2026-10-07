@@ -42,7 +42,13 @@ Neben den Übungen baust du über den ganzen Kurs eine eigene Website zu einem T
 | | [02](lektionen/02-text-links-bilder/README.md) | Text, Listen, Links, Bilder |
 | | [03](lektionen/03-semantik/README.md) | Semantische Struktur |
 | | [04](lektionen/04-formulare/README.md) | Formulare |
-| 2 – CSS | | folgt |
+| 2 – CSS | [05](lektionen/05-css-grundlagen/README.md) | CSS einbinden, Selektoren, Kaskade und Spezifität |
+| | [06](lektionen/06-box-modell/README.md) | Das Box-Modell |
+| | [07](lektionen/07-schrift-farben/README.md) | Schrift, Farben und Custom Properties |
+| | [08](lektionen/08-flexbox/README.md) | Flexbox |
+| | [09](lektionen/09-grid/README.md) | Grid |
+| | [10](lektionen/10-responsive/README.md) | Responsive Design |
+| | [11](lektionen/11-zustaende-dark-mode/README.md) | Zustände, Übergänge und Dark Mode |
 | 3 – TypeScript | | folgt |
 | 4 – Abschlussprojekt | | folgt |
 

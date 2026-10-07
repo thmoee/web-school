@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wie breit ist das?</title>
+    <!-- Ausnahmsweise steht das CSS in einem <style>-Element, damit du alles auf einen Blick siehst. -->
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: system-ui, sans-serif;
+      }
+
+      .box {
+        width: 300px;
+        padding: 20px;
+        border: 5px solid #1f6f5c;
+        margin-bottom: 30px;
+        background-color: #e3f1ec;
+      }
+
+      .b {
+        box-sizing: border-box;
+      }
+
+      .c {
+        margin-top: 20px;
+      }
+
+      .d {
+        width: 300px;
+        padding: 20px;
+        border: 5px solid #1f6f5c;
+        margin: 20px;
+        background-color: #e3f1ec;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box">Box A</div>
+    <div class="box b">Box B</div>
+    <div class="box c">Box C</div>
+
+    <p>
+      Ein Satz mit einem <span class="d">Inline-Element</span> darin, und noch ein paar Wörter mehr,
+      damit der Text über zwei Zeilen geht, wenn das Fenster schmal genug ist.
+    </p>
+  </body>
+</html>

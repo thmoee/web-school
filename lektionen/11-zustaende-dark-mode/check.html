@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 11: Zustände, Übergänge und Dark Mode</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const SICHTBAR = ["color", "backgroundColor", "textDecorationLine", "borderBottomColor", "boxShadow", "transform", "opacity"];
+
+      // Sieht das Element im Zustand anders aus als normal?
+      function anders(stil, zustand, el, ...zustaende) {
+        const normal = stil(el);
+        const vorher = Object.fromEntries(SICHTBAR.map((name) => [name, normal[name]]));
+        const nachher = zustand(el, ...zustaende);
+        return SICHTBAR.some((name) => vorher[name] !== nachher[name]);
+      }
+
+      // Schaltet irgendeine Regel den Fokusring dieses Elements ab?
+      function fokusAbgeschaltet(regeln, el) {
+        return regeln().some((r) => {
+          if (!r.style || !(r.style.outlineStyle === "none" || r.style.outlineWidth === "0px")) return false;
+          return r.selectorText.split(",").some((teil) => {
+            const ohneZustand = teil.replace(/:(hover|focus-visible|focus-within|focus|active)(?![\w-])/g, "").trim();
+            return el.matches(ohneZustand === "" || /[>+~]$/.test(ohneZustand) ? `${ohneZustand} *` : ohneZustand);
+          });
+        });
+      }
+
+      // Hat der Fokusring im Zustand :focus-visible einen sichtbaren Rahmen?
+      function fokusSichtbar({ zustand, regeln }, el) {
+        const z = zustand(el, ":focus", ":focus-visible");
+        const eigenerRing = (z.outlineStyle !== "none" && parseFloat(z.outlineWidth) > 0) || z.boxShadow !== "none";
+        return eigenerRing || !fokusAbgeschaltet(regeln, el);
+      }
+
+      // Die Dauer des Übergangs für die Hintergrundfarbe in Sekunden, oder 0
+      function uebergang(stil, el) {
+        const eigenschaften = stil(el).transitionProperty.split(", ");
+        const dauern = stil(el).transitionDuration.split(", ").map(parseFloat);
+        const i = eigenschaften.findIndex((e) => e === "background-color" || e === "background");
+        return i === -1 ? 0 : dauern[i % dauern.length];
+      }
+
+      function verhaeltnis(helligkeit, a, b) {
+        const [hell, dunkel] = [helligkeit(a), helligkeit(b)].sort((x, y) => y - x);
+        return (hell + 0.05) / (dunkel + 0.05);
+      }
+
+      const TEXTE = "h1, h2, main p, label, legend, nav a, form button, footer p, footer a";
+      const genugKontrast = ({ alle, kontrast }) => alle(TEXTE).every((el) => kontrast(el) >= (/^H\d/.test(el.tagName) ? 3 : 4.5));
+
+      const darkModeRegeln = (regeln) =>
+        regeln().filter((r) => r.media && /prefers-color-scheme\s*:\s*dark/.test(r.media.mediaText));
+
+      pruefe([
+        {
+          titel: "Die Anmeldung mit Zuständen und Dark Mode",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Die Links in der Navigation verändern sich beim Hover",
+              test: ({ alle, stil, zustand }) => alle("nav a").every((a) => anders(stil, zustand, a, ":hover")),
+            },
+            {
+              name: "Die Links im Footer verändern sich beim Hover",
+              test: ({ alle, stil, zustand }) => alle("footer a").every((a) => anders(stil, zustand, a, ":hover")),
+            },
+            {
+              name: "Der Knopf „Anmelden“ bekommt beim Hover eine andere Hintergrundfarbe",
+              tipp: "Rechne die Spezifität der Regeln aus, die den Knopf treffen. Welche ist stärker als `button:hover`?",
+              test: ({ doc, stil, zustand }) => {
+                const knopf = doc.querySelector("form button");
+                return zustand(knopf, ":hover").backgroundColor !== stil(knopf).backgroundColor;
+              },
+            },
+            {
+              name: "Alle Formularfelder und der Knopf zeigen beim Fokus einen sichtbaren Rahmen",
+              tipp: "Lösch die Regel mit `outline: none` und gib `:focus-visible` einen eigenen Fokusring.",
+              test: (ctx) => ctx.alle("input, select, textarea, button").every((el) => fokusSichtbar(ctx, el)),
+            },
+            {
+              name: "Beide Knöpfe haben einen Übergang für die Hintergrundfarbe, höchstens 0.5s lang",
+              tipp: "`transition: background-color 0.2s;` in der Regel ohne `:hover`. Nicht `all`.",
+              test: ({ doc, stil }) =>
+                [doc.querySelector("form button"), doc.querySelector(".knopf")].every((el) => {
+                  const dauer = uebergang(stil, el);
+                  return dauer > 0 && dauer <= 0.5;
+                }),
+            },
+            {
+              name: "Eine Media Query für `prefers-color-scheme: dark` setzt Custom Properties neu",
+              test: ({ regeln }) =>
+                darkModeRegeln(regeln).some((m) => [...m.cssRules].some((r) => r.style && [...r.style].some((name) => name.startsWith("--")))),
+            },
+            {
+              name: "Im Dark Mode ist der Text hell",
+              test: ({ dunkel, stil, helligkeit }) => dunkel(() => helligkeit(stil("main p").color) > 0.4),
+            },
+            {
+              name: "Im Dark Mode haben alle Texte genug Kontrast",
+              tipp: "Akzentfarben müssen im Dark Mode meist heller werden. Prüf auch die Schrift auf den Knöpfen.",
+              test: (ctx) => ctx.dunkel(() => genugKontrast(ctx)),
+            },
+            {
+              name: "Im hellen Modus haben alle Texte genug Kontrast",
+              test: (ctx) => genugKontrast(ctx),
+            },
+            {
+              name: "`color-scheme` ist für hell und dunkel gesetzt",
+              bonus: true,
+              test: ({ doc, stil }) => /light/.test(stil(doc.documentElement).colorScheme) && /dark/.test(stil(doc.documentElement).colorScheme),
+            },
+            {
+              name: "Im Dark Mode ist der Knopf „Anmelden“ auch beim Hover gut lesbar",
+              bonus: true,
+              test: ({ doc, dunkel, zustand, helligkeit }) =>
+                dunkel(() => {
+                  const z = zustand(doc.querySelector("form button"), ":hover");
+                  return verhaeltnis(helligkeit, z.color, z.backgroundColor) >= 4.5;
+                }),
+            },
+            {
+              name: "Falsch ausgefüllte Felder werden mit `:user-invalid` markiert",
+              bonus: true,
+              test: ({ regeln }) => regeln().some((r) => /:user-invalid/.test(r.selectorText)),
+            },
+            {
+              name: "Bei `prefers-reduced-motion: reduce` werden Übergänge abgeschaltet",
+              bonus: true,
+              test: ({ regeln }) =>
+                regeln().some(
+                  (r) => r.media && /prefers-reduced-motion\s*:\s*reduce/.test(r.media.mediaText) && [...r.cssRules].some((innen) => innen.style?.transition || innen.style?.transitionDuration),
+                ),
+            },
+            {
+              name: "Checkboxen und Radio-Buttons haben eine `accent-color`",
+              bonus: true,
+              test: ({ alle, stil }) => alle('input[type="checkbox"], input[type="radio"]').every((el) => stil(el).accentColor !== "auto"),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

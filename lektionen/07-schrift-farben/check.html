@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 07: Schrift, Farben und Custom Properties</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      // Die Custom Properties aus der Regel für :root
+      function variablen(regeln) {
+        const liste = [];
+        for (const regel of regeln().filter((r) => r.selectorText === ":root")) {
+          for (const name of regel.style) {
+            if (name.startsWith("--")) liste.push(regel.style.getPropertyValue(name).trim());
+          }
+        }
+        return liste;
+      }
+
+      // Steht in diesem Wert eine Farbe, die nicht aus einer Variable kommt?
+      function hatFarbe(wert) {
+        const ohneVariablen = wert.replace(/var\([^)]*\)/g, "");
+        if (/\b(rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\(/i.test(ohneVariablen)) return true;
+        return ohneVariablen
+          .split(/[\s,/()]+/)
+          .some((teil) => teil && !/^(transparent|currentcolor|inherit|initial|unset|revert|none)$/i.test(teil) && CSS.supports("color", teil));
+      }
+
+      pruefe([
+        {
+          titel: "Der Brettspielclub in Farbe",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Mindestens drei Farben sind als Custom Properties in `:root` festgelegt",
+              tipp: "`:root { --farbe-akzent: #1f6f5c; }`",
+              test: ({ regeln }) => variablen(regeln).filter((wert) => CSS.supports("color", wert)).length >= 3,
+            },
+            {
+              name: "Außerhalb von `:root` steht keine Farbe mehr direkt im CSS",
+              tipp: "Ersetze jede Farbe durch `var(--…)`, auch `white`. Welche Regel noch eine Farbe enthält, steht in der Konsole der DevTools.",
+              test: ({ regeln }) => {
+                const funde = regeln()
+                  .filter((r) => r.style && r.selectorText !== ":root")
+                  .filter((r) => [...r.style].some((name) => !name.startsWith("--") && hatFarbe(r.style.getPropertyValue(name))));
+                for (const regel of funde) console.info("Noch eine Farbe ohne var():", regel.cssText);
+                return funde.length === 0;
+              },
+            },
+            {
+              name: "Der Hinweis hat genug Kontrast (mindestens 4.5:1)",
+              test: ({ kontrast }) => kontrast(".hinweis") >= 4.5,
+            },
+            {
+              name: "Die Datumsangaben in den Beiträgen haben genug Kontrast",
+              test: ({ alle, kontrast }) => alle("article time").every((time) => kontrast(time) >= 4.5),
+            },
+            {
+              name: "Der Text im Footer hat genug Kontrast",
+              test: ({ alle, kontrast }) => alle("footer p, footer a").every((el) => kontrast(el) >= 4.5),
+            },
+            {
+              name: "Auch alle anderen Texte haben genug Kontrast",
+              tipp: "Hast du beim Ändern eine neue Stelle mit zu wenig Kontrast geschaffen? Prüf Links, Überschriften und den Knopf.",
+              test: ({ alle, kontrast }) =>
+                alle("p, li a, h1, h2")
+                  .filter((el) => !el.closest(".hinweis, footer"))
+                  .every((el) => kontrast(el) >= (/^H/.test(el.tagName) ? 3 : 4.5)),
+            },
+            {
+              name: "Keine Schriftgröße in `px`",
+              test: ({ regeln }) => regeln().every((r) => !r.style || !r.style.fontSize.endsWith("px")),
+            },
+            {
+              name: "Der Fließtext ist mindestens 16px groß",
+              test: ({ alle, stil }) => alle("main p").every((p) => parseFloat(stil(p).fontSize) >= 16),
+            },
+            {
+              name: "Der Zeilenabstand des Fließtexts liegt zwischen 1.4 und 1.8",
+              tipp: "`line-height` ohne Einheit, zum Beispiel `1.6`.",
+              test: ({ alle, stil }) =>
+                alle("main p").every((p) => {
+                  const verhaeltnis = parseFloat(stil(p).lineHeight) / parseFloat(stil(p).fontSize);
+                  return verhaeltnis >= 1.4 && verhaeltnis <= 1.8;
+                }),
+            },
+            {
+              name: "Die `<h1>` ist größer als die `<h2>`, und die ist größer als der Fließtext",
+              test: ({ stil }) => {
+                const groesse = (selektor) => parseFloat(stil(selektor).fontSize);
+                return groesse("h1") > groesse("h2") && groesse("h2") > groesse("main p");
+              },
+            },
+            {
+              name: "Auch der Eckenradius ist eine Custom Property",
+              bonus: true,
+              test: ({ regeln }) => variablen(regeln).some((wert) => /^\d+(\.\d+)?(px|rem|em)$/.test(wert)),
+            },
+            {
+              name: "Der Kasten hat eine eigene Akzentfarbe, nur durch eine neue `--farbe-akzent`",
+              bonus: true,
+              tipp: "Setz in der Regel für `aside` die Variable neu, die auch die Überschriften färbt.",
+              test: ({ regeln, stil }) =>
+                regeln().some((r) => /aside/.test(r.selectorText) && [...r.style].some((name) => name.startsWith("--"))) &&
+                stil("aside h2").color !== stil("main h2").color,
+            },
+            {
+              name: "Die Überschriften haben eine andere Schrift als der Fließtext",
+              bonus: true,
+              test: ({ stil }) => stil("h1").fontFamily !== stil("main p").fontFamily && stil("h2").fontFamily === stil("h1").fontFamily,
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

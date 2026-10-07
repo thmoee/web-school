@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 08: Flexbox</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const box = (el) => el.getBoundingClientRect();
+      const mitte = (el) => box(el).top + box(el).height / 2;
+
+      // Stehen die Elemente nebeneinander in einer Zeile?
+      function nebeneinander(elemente) {
+        return elemente.every((el, i) => i === 0 || (box(el).top === box(elemente[0]).top && box(el).left >= box(elemente[i - 1]).right));
+      }
+
+      // Stehen die Elemente untereinander?
+      function untereinander(elemente) {
+        return elemente.every((el, i) => i === 0 || box(el).top >= box(elemente[i - 1]).bottom);
+      }
+
+      pruefe([
+        {
+          titel: "Der Brettspielclub mit Flexbox",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Die Liste in der `<nav>` ist ein Flex-Container mit `gap`",
+              test: ({ stil }) => stil("nav ul").display === "flex" && parseFloat(stil("nav ul").columnGap) > 0,
+            },
+            {
+              name: "Die Menüpunkte stehen nebeneinander und brechen um, wenn es eng wird",
+              tipp: "`flex-wrap: wrap` an der `<ul>`.",
+              test: async ({ alle, stil, breite }) => {
+                await breite(1100);
+                return nebeneinander(alle("nav li")) && stil("nav ul").flexWrap === "wrap";
+              },
+            },
+            {
+              name: "Breites Fenster: Name links und Menü rechts, auf gleicher Höhe",
+              tipp: "`justify-content` verteilt auf der Hauptachse, `align-items` richtet auf der Querachse aus.",
+              test: async ({ doc, stil, breite }) => {
+                await breite(1100);
+                const kopf = doc.querySelector("header");
+                const h1 = doc.querySelector("header h1");
+                const nav = doc.querySelector("header nav");
+                const innenRechts = box(kopf).right - parseFloat(stil(kopf).paddingRight);
+                return (
+                  stil(kopf).display === "flex" &&
+                  box(nav).left > box(h1).right &&
+                  Math.abs(box(nav).right - innenRechts) <= 2 &&
+                  Math.abs(mitte(nav) - mitte(h1)) <= 4
+                );
+              },
+            },
+            {
+              name: "Schmales Fenster: Das Menü rutscht unter den Namen",
+              test: async ({ doc, breite }) => {
+                await breite(500);
+                return box(doc.querySelector("header nav")).top >= box(doc.querySelector("header h1")).bottom;
+              },
+            },
+            {
+              name: "Breites Fenster: Die drei Beiträge stehen nebeneinander und sind gleich breit",
+              test: async ({ alle, breite }) => {
+                await breite(1100);
+                const karten = alle(".beitraege > article");
+                return karten.length === 3 && nebeneinander(karten) && karten.every((k) => Math.abs(box(k).width - box(karten[0]).width) <= 1);
+              },
+            },
+            {
+              name: "Zwischen den Beiträgen ist ein Abstand mit `gap`",
+              test: ({ stil }) => stil(".beitraege").display === "flex" && parseFloat(stil(".beitraege").columnGap) > 0,
+            },
+            {
+              name: "Schmales Fenster: Die Beiträge stehen untereinander, jeder über die ganze Breite",
+              tipp: "`flex-wrap: wrap` am Container und eine Basisbreite wie `flex: 1 1 15rem` an den Karten.",
+              test: async ({ doc, alle, breite }) => {
+                await breite(500);
+                const karten = alle(".beitraege > article");
+                return untereinander(karten) && karten.every((k) => Math.abs(box(k).width - box(doc.querySelector(".beitraege")).width) <= 1);
+              },
+            },
+            {
+              name: "Im Footer steht das Copyright links und die Links rechts",
+              bonus: true,
+              test: async ({ doc, alle, stil, breite }) => {
+                await breite(1100);
+                const [links, rechts] = alle("footer > p");
+                return stil("footer").display === "flex" && nebeneinander([links, rechts]) && Math.abs(box(rechts).right - box(doc.querySelector("footer")).right) <= 2;
+              },
+            },
+            {
+              name: "Der `<body>` ist eine Flex-Spalte, mindestens so hoch wie das Fenster, und `<main>` wächst",
+              bonus: true,
+              test: ({ doc, stil }) =>
+                stil("body").display === "flex" &&
+                stil("body").flexDirection === "column" &&
+                parseFloat(stil("body").minHeight) >= doc.documentElement.clientHeight - 1 &&
+                parseFloat(stil("main").flexGrow) > 0,
+            },
+            {
+              name: "„Weiterlesen“ steht bei allen drei Karten ganz unten auf einer Linie",
+              bonus: true,
+              test: async ({ alle, breite }) => {
+                await breite(1100);
+                const links = alle(".mehr");
+                return links.length === 3 && links.every((p) => Math.abs(box(p).bottom - box(links[0]).bottom) <= 1);
+              },
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

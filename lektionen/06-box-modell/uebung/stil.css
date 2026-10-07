@@ -1,0 +1,33 @@
+/* Aus Lektion 05 */
+
+body {
+  font-family: system-ui, sans-serif;
+  color: #2b2b2b;
+  background-color: #fffdf7;
+}
+
+h1,
+h2 {
+  color: #1f6f5c;
+}
+
+nav a {
+  color: #1f6f5c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.hinweis {
+  background-color: #fdf3d7;
+}
+
+article time {
+  color: #666;
+  font-style: italic;
+}
+
+.wichtig {
+  font-weight: bold;
+}
+
+/* Ab hier: Lektion 06. Die Aufgaben stehen in aufgaben.md. */

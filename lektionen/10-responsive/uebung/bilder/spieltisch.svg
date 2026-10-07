@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 450" width="1200" height="450">
+  <!-- Tischplatte -->
+  <rect width="1200" height="450" fill="#8a5a3b"/>
+  <g stroke="#7a4e33" stroke-width="3">
+    <line x1="0" y1="90" x2="1200" y2="90"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/>
+    <line x1="0" y1="270" x2="1200" y2="270"/>
+    <line x1="0" y1="360" x2="1200" y2="360"/>
+  </g>
+  <!-- Spielbrett -->
+  <rect x="380" y="60" width="440" height="330" rx="12" fill="#e3f1ec" stroke="#1f6f5c" stroke-width="8"/>
+  <g fill="#1f6f5c" opacity="0.35">
+    <rect x="420" y="100" width="80" height="80" rx="6"/>
+    <rect x="560" y="100" width="80" height="80" rx="6"/>
+    <rect x="700" y="100" width="80" height="80" rx="6"/>
+    <rect x="490" y="210" width="80" height="80" rx="6"/>
+    <rect x="630" y="210" width="80" height="80" rx="6"/>
+    <rect x="420" y="300" width="80" height="60" rx="6"/>
+    <rect x="700" y="300" width="80" height="60" rx="6"/>
+  </g>
+  <!-- Karten -->
+  <g stroke="#5c4a12" stroke-width="3">
+    <rect x="110" y="110" width="130" height="185" rx="12" fill="#fdf3d7" transform="rotate(-12 175 202)"/>
+    <rect x="150" y="120" width="130" height="185" rx="12" fill="#fdf3d7" transform="rotate(4 215 212)"/>
+    <rect x="980" y="230" width="130" height="185" rx="12" fill="#fdf3d7" transform="rotate(18 1045 322)"/>
+  </g>
+  <circle cx="215" cy="212" r="34" fill="#9a3412"/>
+  <!-- Würfel -->
+  <g transform="rotate(14 1000 120)">
+    <rect x="950" y="70" width="100" height="100" rx="18" fill="white" stroke="#2b2b2b" stroke-width="4"/>
+    <g fill="#2b2b2b">
+      <circle cx="975" cy="95" r="9"/>
+      <circle cx="1025" cy="95" r="9"/>
+      <circle cx="1000" cy="120" r="9"/>
+      <circle cx="975" cy="145" r="9"/>
+      <circle cx="1025" cy="145" r="9"/>
+    </g>
+  </g>
+  <g transform="rotate(-20 1110 90)">
+    <rect x="1070" y="50" width="80" height="80" rx="14" fill="white" stroke="#2b2b2b" stroke-width="4"/>
+    <g fill="#2b2b2b">
+      <circle cx="1090" cy="70" r="8"/>
+      <circle cx="1130" cy="110" r="8"/>
+    </g>
+  </g>
+  <!-- Spielfiguren -->
+  <g stroke="#2b2b2b" stroke-width="3">
+    <g fill="#9a3412">
+      <circle cx="520" cy="170" r="15"/>
+      <path d="M510 182 h20 l14 46 h-48 z"/>
+    </g>
+    <g fill="#1f6f5c">
+      <circle cx="660" cy="275" r="15"/>
+      <path d="M650 287 h20 l14 46 h-48 z"/>
+    </g>
+    <g fill="#d4a017">
+      <circle cx="740" cy="180" r="15"/>
+      <path d="M730 192 h20 l14 46 h-48 z"/>
+    </g>
+  </g>
+</svg>

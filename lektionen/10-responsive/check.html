@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 10: Responsive Design</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const box = (el) => el.getBoundingClientRect();
+
+      function untereinander(elemente) {
+        return elemente.every((el, i) => i === 0 || box(el).top >= box(elemente[i - 1]).bottom);
+      }
+
+      // Die Bedingungen aller Media Queries, z. B. "(min-width: 40rem)"
+      function medien(regeln) {
+        return regeln()
+          .filter((r) => r.media && r.cssRules)
+          .map((r) => r.media.mediaText);
+      }
+
+      pruefe([
+        {
+          titel: "Der Brettspielclub auf allen Bildschirmen",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "Der viewport-Meta-Tag ist da",
+              test: ({ doc }) => doc.querySelector('head meta[name="viewport"]')?.content.includes("width=device-width"),
+            },
+            {
+              name: "375px: Kein waagerechter Scrollbalken",
+              tipp: "Irgendein Element ist breiter als der Bildschirm. Such im Gerätemodus, was rechts herausragt.",
+              test: async ({ doc, breite }) => {
+                await breite(375);
+                return doc.documentElement.scrollWidth <= doc.documentElement.clientWidth;
+              },
+            },
+            {
+              name: "375px: Das Bild passt hinein und ist nicht verzerrt",
+              tipp: "`max-width: 100%` und `height: auto` für alle Bilder.",
+              test: async ({ doc, alle, breite }) => {
+                await breite(375);
+                return alle("img").every((img) => {
+                  const platz = Math.min(box(img.parentElement).width, doc.documentElement.clientWidth);
+                  const verhaeltnis = box(img).width / box(img).height;
+                  return box(img).width <= platz + 0.5 && Math.abs(verhaeltnis - img.naturalWidth / img.naturalHeight) < 0.02;
+                });
+              },
+            },
+            {
+              name: "375px: Am Rand bleibt etwas Platz",
+              test: async ({ doc, breite }) => {
+                await breite(375);
+                const main = box(doc.querySelector("main"));
+                return main.left >= 8 && doc.documentElement.clientWidth - main.right >= 8;
+              },
+            },
+            {
+              name: "375px: Kopf, Hauptinhalt, Kasten und Fußbereich stehen untereinander",
+              test: async ({ alle, breite }) => {
+                await breite(375);
+                return untereinander(alle("header, main, aside, footer"));
+              },
+            },
+            {
+              name: "375px: Die Beiträge stehen untereinander",
+              test: async ({ alle, breite }) => {
+                await breite(375);
+                return untereinander(alle(".beitraege > article"));
+              },
+            },
+            {
+              name: "1100px: Die Beiträge stehen nebeneinander",
+              test: async ({ alle, breite }) => {
+                await breite(1100);
+                const [erste, zweite] = alle(".beitraege > article");
+                return box(zweite).top === box(erste).top && box(zweite).left > box(erste).right;
+              },
+            },
+            {
+              name: "1100px: Der Kasten „Nächstes Treffen“ steht rechts neben dem Hauptinhalt",
+              test: async ({ doc, breite }) => {
+                await breite(1100);
+                return box(doc.querySelector("aside")).left >= box(doc.querySelector("main")).right;
+              },
+            },
+            {
+              name: "Es gibt eine Media Query mit `min-width`",
+              test: ({ regeln }) => medien(regeln).some((m) => /min-width|width\s*>|<=?\s*width/.test(m)),
+            },
+            {
+              name: "Mobile first: keine Media Query mit `max-width`",
+              bonus: true,
+              test: ({ regeln }) => !medien(regeln).some((m) => /max-width|width\s*<|>=?\s*width/.test(m)),
+            },
+            {
+              name: "375px: Die Menülinks sind mindestens 44px hoch",
+              bonus: true,
+              test: async ({ alle, breite }) => {
+                await breite(375);
+                return alle("nav a").every((a) => box(a).height >= 44);
+              },
+            },
+            {
+              name: "Die `<h1>` ist bei 375px kleiner als bei 1100px",
+              bonus: true,
+              tipp: "`clamp()` mit einem Anteil in `vw`.",
+              test: async ({ stil, breite }) => {
+                await breite(375);
+                const klein = parseFloat(stil("h1").fontSize);
+                await breite(1100);
+                return klein < parseFloat(stil("h1").fontSize);
+              },
+            },
+            {
+              name: "Es gibt Regeln für den Druck",
+              bonus: true,
+              test: ({ regeln }) => medien(regeln).some((m) => /\bprint\b/.test(m)),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>

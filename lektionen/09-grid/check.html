@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 09: Grid</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const box = (el) => el.getBoundingClientRect();
+
+      // Die Breiten der Spalten von .spiele in Pixeln
+      const spalten = (stil) => stil(".spiele").gridTemplateColumns.split(" ").map(parseFloat);
+
+      pruefe([
+        {
+          titel: "Unsere Spiele",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "`.spiele` ist ein Grid mit Abstand zwischen den Karten",
+              test: ({ stil }) => stil(".spiele").display === "grid" && parseFloat(stil(".spiele").columnGap) > 0,
+            },
+            {
+              name: "Die Liste hat keine Aufzählungspunkte und ist nicht eingerückt",
+              test: ({ alle, stil }) =>
+                parseFloat(stil(".spiele").paddingLeft) === 0 && alle(".spiel").every((li) => stil(li).listStyleType === "none" || stil(li).display !== "list-item"),
+            },
+            {
+              name: "Breites Fenster: Mindestens drei gleich breite Karten stehen nebeneinander",
+              test: async ({ stil, breite }) => {
+                await breite(1100);
+                const liste = spalten(stil);
+                return liste.length >= 3 && liste.every((spalte) => Math.abs(spalte - liste[0]) <= 1);
+              },
+            },
+            {
+              name: "Die Spalten sind mindestens `13rem` breit, und es sind so viele, wie hineinpassen",
+              tipp: "`repeat(auto-fill, minmax(13rem, 1fr))`",
+              test: async ({ stil, breite }) => {
+                for (const px of [900, 1100]) {
+                  await breite(px);
+                  const platz = parseFloat(stil(".spiele").width);
+                  const luecke = parseFloat(stil(".spiele").columnGap);
+                  const passen = Math.floor((platz + luecke) / (13 * 16 + luecke));
+                  const liste = spalten(stil);
+                  if (liste.length !== passen || liste.some((spalte) => spalte < 13 * 16 - 0.5)) return false;
+                }
+                return true;
+              },
+            },
+            {
+              name: "Der `<body>` ist ein Grid mit benannten Bereichen",
+              test: ({ stil }) => stil("body").display === "grid" && stil("body").gridTemplateAreas !== "none",
+            },
+            {
+              name: "Breites Fenster: Kopf und Fuß gehen über die ganze Breite",
+              test: async ({ doc, breite }) => {
+                await breite(1100);
+                const kopf = box(doc.querySelector("header"));
+                const fuss = box(doc.querySelector("footer"));
+                const main = box(doc.querySelector("main"));
+                const aside = box(doc.querySelector("aside"));
+                return Math.abs(kopf.width - fuss.width) <= 1 && kopf.width >= aside.right - main.left - 1;
+              },
+            },
+            {
+              name: "Breites Fenster: „Spiel des Monats“ steht rechts neben dem Hauptinhalt, `16rem` breit",
+              test: async ({ doc, breite }) => {
+                await breite(1100);
+                const main = box(doc.querySelector("main"));
+                const aside = box(doc.querySelector("aside"));
+                return aside.left >= main.right && Math.abs(aside.top - main.top) <= 1 && Math.abs(aside.width - 16 * 16) <= 1;
+              },
+            },
+            {
+              name: "Das hervorgehobene Spiel ist zwei Spalten breit",
+              bonus: true,
+              test: async ({ doc, breite }) => {
+                await breite(1100);
+                const normal = box(doc.querySelector(".spiel:not(.hervorgehoben)")).width;
+                return box(doc.querySelector(".hervorgehoben")).width > normal * 2;
+              },
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>
