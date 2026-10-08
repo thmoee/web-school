@@ -1,0 +1,27 @@
+/*
+ * So soll die Seite aussehen:
+ * - Der Hintergrund ist hellgelb (#fffbea), der Text dunkelgrau (#333).
+ * - Die Überschrift ist dunkelrot.
+ * - Das Datum ist fett.
+ * - „Eintritt frei!“ ist anderthalbmal so groß wie normaler Text.
+ *
+ * Aber irgendwas stimmt hier nicht …
+ */
+
+body {
+  font-family: sans-serif;
+  color: #333
+  background-color: #fffbea;
+}
+
+h1 {
+  colour: darkred;
+}
+
+datum {
+  font-weight: bold;
+}
+
+.preis {
+  font-size: 1.5 rem;
+}

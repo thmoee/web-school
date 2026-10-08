@@ -1,0 +1,162 @@
+/* Lösung zu Lektion 08 */
+
+:root {
+  --farbe-text: #2b2b2b;
+  --farbe-text-leise: #5f6b68;
+  --farbe-hintergrund: #fffdf7;
+  --farbe-karte: white;
+  --farbe-akzent: #1f6f5c;
+  --farbe-akzent-hell: #e3f1ec;
+  --farbe-hinweis: #fdf3d7;
+  --farbe-hinweis-text: #5c4a12;
+  --farbe-linie: #c9d6d2;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Aufgabe 6: Der Footer klebt unten, auch wenn die Seite wenig Inhalt hat. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--farbe-text);
+  background-color: var(--farbe-hintergrund);
+}
+
+h1,
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.2;
+  color: var(--farbe-akzent);
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+/* Aufgabe 3 */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--farbe-akzent-hell);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+/* Aufgabe 2 */
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  color: var(--farbe-akzent);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+main {
+  flex: 1;
+}
+
+.knopf {
+  color: var(--farbe-karte);
+  background-color: var(--farbe-akzent);
+  border-radius: 6px;
+}
+
+.hinweis {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  color: var(--farbe-hinweis-text);
+  background-color: var(--farbe-hinweis);
+}
+
+.wichtig {
+  font-weight: bold;
+}
+
+/* Aufgabe 4: Jede Karte ist ungefähr 15rem breit. Was nicht mehr in die Zeile passt, bricht um. */
+.beitraege {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+article {
+  /* Aufgabe 8: Die Karte ist selbst ein Flex-Container, damit „Weiterlesen“ nach unten rutschen kann. */
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 15rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--farbe-linie);
+  border-radius: var(--radius);
+  background-color: var(--farbe-karte);
+}
+
+/* In einem Flex-Container fallen Margins nicht zusammen. Ohne diese Regel wären die Abstände in der Karte doppelt so groß. */
+article > * {
+  margin-top: 0;
+}
+
+article h2 {
+  margin-top: 0.5rem;
+}
+
+.mehr {
+  margin-top: auto;
+}
+
+article time {
+  color: var(--farbe-text-leise);
+  font-style: italic;
+}
+
+.mehr a {
+  color: var(--farbe-akzent);
+  font-weight: bold;
+}
+
+aside {
+  --farbe-akzent: #9a3412;
+  padding: 0.25rem 1.25rem;
+  border-left: 4px solid var(--farbe-akzent);
+}
+
+/* Aufgabe 5 */
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--farbe-linie);
+  color: var(--farbe-text-leise);
+}
+
+footer a {
+  color: var(--farbe-akzent);
+}

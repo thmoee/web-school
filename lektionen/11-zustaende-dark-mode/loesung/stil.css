@@ -1,0 +1,207 @@
+/* Lösung zu Lektion 11 */
+
+:root {
+  --farbe-text: #2b2b2b;
+  --farbe-text-leise: #5f6b68;
+  --farbe-hintergrund: #fffdf7;
+  --farbe-karte: white;
+  --farbe-akzent: #1f6f5c;
+  --farbe-akzent-dunkel: #134a3d;
+  --farbe-akzent-hell: #e3f1ec;
+  --farbe-linie: #6b7f7b;
+  --farbe-fehler: #b42318;
+  --radius: 8px;
+  /* Aufgabe 5: Der Browser darf Formularfelder und Scrollbalken passend einfärben. */
+  color-scheme: light dark;
+  /* Aufgabe 8: Checkboxen und Radio-Buttons in der Akzentfarbe. Wird vererbt. */
+  accent-color: var(--farbe-akzent);
+}
+
+/* Aufgabe 5: Im Dark Mode werden nur die Variablen neu gesetzt. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --farbe-text: #e8e6e1;
+    --farbe-text-leise: #a9b4b1;
+    --farbe-hintergrund: #161b1a;
+    --farbe-karte: #1f2624;
+    --farbe-akzent: #7fd1b9;
+    /* Beim Hover wird der Knopf im Dark Mode heller statt dunkler. */
+    --farbe-akzent-dunkel: #b0eadb;
+    --farbe-akzent-hell: #1d3a33;
+    --farbe-linie: #7d918d;
+    --farbe-fehler: #ff8a80;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--farbe-text);
+  background-color: var(--farbe-hintergrund);
+}
+
+h1,
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.2;
+  color: var(--farbe-akzent);
+}
+
+h1 {
+  font-size: clamp(1.75rem, 1rem + 3vw, 2.25rem);
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0 1.5rem;
+  padding: 1rem 1.25rem;
+  background-color: var(--farbe-akzent-hell);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0.75rem;
+  border-radius: 6px;
+  color: var(--farbe-akzent);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Aufgabe 1 */
+nav a:hover {
+  text-decoration: underline;
+}
+
+.knopf {
+  color: var(--farbe-karte);
+  background-color: var(--farbe-akzent);
+  /* Aufgabe 4 */
+  transition: background-color 0.2s ease;
+}
+
+nav .knopf:hover {
+  text-decoration: none;
+  background-color: var(--farbe-akzent-dunkel);
+}
+
+/* Das Formular */
+
+.feld label {
+  display: block;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  color: var(--farbe-text);
+  background-color: var(--farbe-karte);
+  border: 2px solid var(--farbe-linie);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+}
+
+/*
+ * Aufgabe 3: Die Regel mit outline: none ist weg. Stattdessen gibt es einen eigenen,
+ * gut sichtbaren Fokusring für alles, was man mit der Tastatur erreichen kann.
+ */
+:focus-visible {
+  outline: 3px solid var(--farbe-akzent);
+  outline-offset: 2px;
+}
+
+/* Aufgabe 6: Rot erst, wenn jemand das Feld bearbeitet hat und es falsch ist. */
+:user-invalid {
+  border-color: var(--farbe-fehler);
+}
+
+.feld input,
+.feld select,
+.feld textarea {
+  width: 100%;
+}
+
+fieldset {
+  margin: 1rem 0;
+  border: 2px solid var(--farbe-linie);
+  border-radius: var(--radius);
+}
+
+legend {
+  padding: 0 0.25rem;
+  font-weight: bold;
+}
+
+fieldset label {
+  margin-right: 1rem;
+}
+
+/*
+ * Aufgabe 2: #anmeldung button hatte die Spezifität 1, 0, 1 und war damit stärker als button:hover mit 0, 1, 1.
+ * Ohne die ID hat form button nur 0, 0, 2, und der Hover gewinnt.
+ */
+form button {
+  font: inherit;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  color: var(--farbe-karte);
+  background-color: var(--farbe-akzent);
+  cursor: pointer;
+  /* Aufgabe 4 */
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--farbe-akzent-dunkel);
+}
+
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1rem;
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--farbe-linie);
+  color: var(--farbe-text-leise);
+}
+
+footer a {
+  color: var(--farbe-akzent);
+}
+
+/* Aufgabe 1 */
+footer a:hover {
+  text-decoration: none;
+}
+
+/* Aufgabe 7 */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

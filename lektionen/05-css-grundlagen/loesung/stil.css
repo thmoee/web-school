@@ -1,0 +1,35 @@
+/* Aufgabe 1: Grundschrift und Textfarbe für die ganze Seite. Wird an alles darin vererbt. */
+body {
+  font-family: system-ui, sans-serif;
+  color: #2b2b2b;
+  background-color: #fffdf7;
+}
+
+/* Aufgabe 2a: Eine Regel für beide Überschriften-Ebenen */
+h1,
+h2 {
+  color: #1f6f5c;
+}
+
+/* Aufgabe 2b: nur die Links in der Navigation */
+nav a {
+  color: #1f6f5c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* Aufgabe 2c */
+.hinweis {
+  background-color: #fdf3d7;
+}
+
+/* Aufgabe 2d: nur die Datumsangaben in den Beiträgen, nicht die im aside */
+article time {
+  color: #666;
+  font-style: italic;
+}
+
+/* Aufgabe 2e */
+.wichtig {
+  font-weight: bold;
+}

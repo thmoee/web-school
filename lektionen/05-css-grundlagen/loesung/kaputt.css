@@ -1,0 +1,25 @@
+/*
+ * So soll die Seite aussehen:
+ * - Der Hintergrund ist hellgelb (#fffbea), der Text dunkelgrau (#333).
+ * - Die Überschrift ist dunkelrot.
+ * - Das Datum ist fett.
+ * - „Eintritt frei!“ ist anderthalbmal so groß wie normaler Text.
+ */
+
+body {
+  font-family: sans-serif;
+  color: #333; /* Fehler 1: Das Semikolon fehlte. Dadurch war auch die nächste Zeile ungültig. */
+  background-color: #fffbea;
+}
+
+h1 {
+  color: darkred; /* Fehler 2: Die Eigenschaft heißt color, nicht colour. */
+}
+
+.datum { /* Fehler 3: Der Punkt fehlte. „datum“ allein sucht ein Element <datum>. */
+  font-weight: bold;
+}
+
+.preis {
+  font-size: 1.5rem; /* Fehler 4: Zwischen Zahl und Einheit darf kein Leerzeichen stehen. */
+}

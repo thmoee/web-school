@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flexbox-Rätsel</title>
+    <!-- Ausnahmsweise steht das CSS in einem <style>-Element, damit du alles auf einen Blick siehst. -->
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+      }
+
+      .reihe {
+        width: 24rem;
+        margin-bottom: 2rem;
+        border: 2px dashed #888;
+      }
+
+      .reihe div {
+        padding: 0.5rem 1rem;
+        background-color: #e3f1ec;
+        border: 2px solid #1f6f5c;
+      }
+
+      /* Rätsel 1 */
+      .r1 {
+        display: flex;
+      }
+
+      /* Rätsel 2 */
+      .r2 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Rätsel 3 */
+      .r3 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      /* Rätsel 4 */
+      .r4 {
+        display: flex;
+      }
+
+      .r4 .b {
+        flex: 1;
+      }
+
+      /* Rätsel 5 */
+      .r5 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Rätsel 1</h2>
+    <div class="reihe r1">
+      <div>A</div>
+      <div class="b">B<br>B<br>B</div>
+      <div>C</div>
+    </div>
+
+    <h2>Rätsel 2</h2>
+    <div class="reihe r2">
+      <div>A</div>
+      <div class="b">B<br>B<br>B</div>
+      <div>C</div>
+    </div>
+
+    <h2>Rätsel 3</h2>
+    <div class="reihe r3">
+      <div>A</div>
+      <div class="b">B<br>B<br>B</div>
+      <div>C</div>
+    </div>
+
+    <h2>Rätsel 4</h2>
+    <div class="reihe r4">
+      <div>A</div>
+      <div class="b">B<br>B<br>B</div>
+      <div>C</div>
+    </div>
+
+    <h2>Rätsel 5</h2>
+    <div class="reihe r5">
+      <div>A</div>
+      <div class="b">B<br>B<br>B</div>
+      <div>C</div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,121 @@
+/* Das CSS aus Lektion 07. Die Aufgaben stehen in aufgaben.md. */
+
+:root {
+  --farbe-text: #2b2b2b;
+  --farbe-text-leise: #5f6b68;
+  --farbe-hintergrund: #fffdf7;
+  --farbe-karte: white;
+  --farbe-akzent: #1f6f5c;
+  --farbe-akzent-hell: #e3f1ec;
+  --farbe-hinweis: #fdf3d7;
+  --farbe-hinweis-text: #5c4a12;
+  --farbe-linie: #c9d6d2;
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  /* Für das neue Layout darf die Seite jetzt breiter werden. */
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--farbe-text);
+  background-color: var(--farbe-hintergrund);
+}
+
+h1,
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.2;
+  color: var(--farbe-akzent);
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+header {
+  padding: 1rem 1.25rem;
+  background-color: var(--farbe-akzent-hell);
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  color: var(--farbe-akzent);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.knopf {
+  color: var(--farbe-karte);
+  background-color: var(--farbe-akzent);
+  border-radius: 6px;
+}
+
+.hinweis {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  color: var(--farbe-hinweis-text);
+  background-color: var(--farbe-hinweis);
+}
+
+.wichtig {
+  font-weight: bold;
+}
+
+article {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--farbe-linie);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  background-color: var(--farbe-karte);
+}
+
+article time {
+  color: var(--farbe-text-leise);
+  font-style: italic;
+}
+
+.mehr a {
+  color: var(--farbe-akzent);
+  font-weight: bold;
+}
+
+aside {
+  --farbe-akzent: #9a3412;
+  padding: 0.25rem 1.25rem;
+  border-left: 4px solid var(--farbe-akzent);
+}
+
+footer {
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--farbe-linie);
+  color: var(--farbe-text-leise);
+}
+
+footer a {
+  color: var(--farbe-akzent);
+}

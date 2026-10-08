@@ -1,0 +1,99 @@
+/* Das CSS aus Lektion 06, ein bisschen aufgeräumt. Die Aufgaben stehen in aufgaben.md. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 45rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.2;
+  color: #2b2b2b;
+  background-color: #fffdf7;
+}
+
+h1 {
+  font-size: 34px;
+}
+
+h2 {
+  font-size: 22px;
+}
+
+h1,
+h2 {
+  color: #1f6f5c;
+}
+
+header {
+  padding: 1rem 1.25rem;
+  background-color: #e3f1ec;
+  border-radius: 0 0 8px 8px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  display: inline;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  color: #1f6f5c;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.knopf {
+  color: white;
+  background-color: #1f6f5c;
+  border-radius: 6px;
+}
+
+.hinweis {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: #b5a26e;
+  background-color: #fdf3d7;
+}
+
+.wichtig {
+  font-weight: bold;
+}
+
+article {
+  padding: 1rem 1.25rem;
+  border: 1px solid #c9d6d2;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  background-color: white;
+}
+
+article time {
+  color: #b0b0b0;
+  font-style: italic;
+}
+
+aside {
+  padding: 0.25rem 1.25rem;
+  border-left: 4px solid #1f6f5c;
+}
+
+footer {
+  margin-top: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid #c9d6d2;
+  color: #a0a0a0;
+}
+
+footer a {
+  color: #1f6f5c;
+}

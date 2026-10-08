@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Check – Lektion 05: CSS-Grundlagen</title>
+    <script src="../../werkzeuge/check.js"></script>
+  </head>
+  <body>
+    <script>
+      const DURCHSICHTIG = "rgba(0, 0, 0, 0)";
+
+      pruefe([
+        {
+          titel: "Aufgaben 1 und 2: Der Brettspielclub bekommt CSS",
+          datei: "uebung/index.html",
+          tests: [
+            {
+              name: "`stil.css` ist im `<head>` eingebunden",
+              tipp: "`<link rel=\"stylesheet\" href=\"stil.css\">` in den `<head>`.",
+              test: async ({ doc, datei }) => {
+                const link = doc.head.querySelector('link[rel="stylesheet"][href$="stil.css"]');
+                return link !== null && (await datei(link.getAttribute("href"))) !== null;
+              },
+            },
+            {
+              name: "Kein CSS in der HTML-Datei",
+              tipp: "Kein `<style>`-Element und kein `style`-Attribut. Alles gehört in `stil.css`.",
+              test: ({ alle }) => alle("style, [style]").length === 0,
+            },
+            {
+              name: "Der `<body>` hat eine neue Schrift, und sie gilt für die ganze Seite",
+              test: ({ stil }) =>
+                !/^"?(Times New Roman|Times|serif)"?$/i.test(stil("body").fontFamily) &&
+                stil("main p").fontFamily === stil("body").fontFamily,
+            },
+            {
+              name: "Der Text hat eine eigene Farbe",
+              tipp: "`color` am `<body>`. Alles darin erbt die Farbe.",
+              test: ({ stil }) => stil("body").color !== "rgb(0, 0, 0)",
+            },
+            {
+              name: "`<h1>` und `<h2>` haben eine gemeinsame Farbe, mit einer einzigen Regel",
+              tipp: "Mit einem Komma trennst du mehrere Selektoren: `h1, h2 { … }`.",
+              test: ({ stil, alle, regeln }) => {
+                const farbe = stil("h1").color;
+                return (
+                  farbe !== stil("body").color &&
+                  alle("h2").every((h2) => stil(h2).color === farbe) &&
+                  regeln().some((r) => /\bh1\b/.test(r.selectorText) && /\bh2\b/.test(r.selectorText) && r.style.color)
+                );
+              },
+            },
+            {
+              name: "Die Links in der Navigation sind nicht unterstrichen",
+              test: ({ alle, stil }) => alle("nav a").every((a) => stil(a).textDecorationLine === "none"),
+            },
+            {
+              name: "Die Links im Footer sind noch unterstrichen",
+              tipp: "Dein Selektor trifft zu viel. Welcher trifft nur die Links, die in der `<nav>` stecken?",
+              test: ({ alle, stil }) => alle("footer a").every((a) => stil(a).textDecorationLine.includes("underline")),
+            },
+            {
+              name: "Der Absatz `.hinweis` hat eine Hintergrundfarbe",
+              test: ({ stil }) => stil(".hinweis").backgroundColor !== DURCHSICHTIG,
+            },
+            {
+              name: "Die Datumsangaben in den Beiträgen sind kursiv und haben eine eigene Farbe",
+              test: ({ alle, stil }) =>
+                alle("article time").every((time) => stil(time).fontStyle === "italic" && stil(time).color !== stil("body").color),
+            },
+            {
+              name: "Das Datum im Kasten „Nächstes Treffen“ ist unverändert",
+              tipp: "Welcher Selektor trifft nur ein `<time>`, das in einem `<article>` steckt?",
+              test: ({ stil }) => stil("aside time").fontStyle === "normal" && stil("aside time").color === stil("aside p").color,
+            },
+            {
+              name: "Der Satz über Mira hat die Klasse `wichtig` und ist fett",
+              test: ({ alle, stil }) => {
+                const satz = alle("p").find((p) => p.textContent.includes("Mira"));
+                return satz.classList.contains("wichtig") && Number(stil(satz).fontWeight) >= 600;
+              },
+            },
+          ],
+        },
+        {
+          titel: "Aufgabe 4: Die kaputte Seite",
+          datei: "uebung/kaputt.html",
+          tests: [
+            {
+              name: "Der Hintergrund ist hellgelb und der Text dunkelgrau",
+              bonus: true,
+              tipp: "Beide Deklarationen sind kaputt, aber nur eine enthält den Fehler.",
+              test: ({ stil }) => stil("body").backgroundColor === "rgb(255, 251, 234)" && stil("body").color === "rgb(51, 51, 51)",
+            },
+            {
+              name: "Die Überschrift ist dunkelrot",
+              bonus: true,
+              test: ({ stil }) => stil("h1").color === "rgb(139, 0, 0)",
+            },
+            {
+              name: "Das Datum ist fett",
+              bonus: true,
+              tipp: "Welches Element sucht der Selektor `datum`?",
+              test: ({ stil }) => Number(stil(".datum").fontWeight) >= 700,
+            },
+            {
+              name: "„Eintritt frei!“ ist anderthalbmal so groß wie normaler Text",
+              bonus: true,
+              test: ({ stil, doc }) => parseFloat(stil(".preis").fontSize) === 1.5 * parseFloat(stil(doc.documentElement).fontSize),
+            },
+          ],
+        },
+      ]);
+    </script>
+  </body>
+</html>
